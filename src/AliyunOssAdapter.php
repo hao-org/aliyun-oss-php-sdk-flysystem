@@ -467,7 +467,7 @@ class AliyunOssAdapter extends AbstractAdapter
         return rtrim($path, '\\/') . '/';
     }
 
-    public function url($path)
+    public function getUrl($path)
     {
         return $path;
     }
