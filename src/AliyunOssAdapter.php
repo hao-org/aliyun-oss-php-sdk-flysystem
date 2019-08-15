@@ -97,7 +97,7 @@ class AliyunOssAdapter extends AbstractAdapter
         $object = $this->applyPathPrefix($path);
         $options = $this->getOptionsFromConfig($config);
 
-        if (! isset($options[OssClient::OSS_CONTENT_TYPE])) {
+        if (!isset($options[OssClient::OSS_CONTENT_TYPE])) {
             $options[OssClient::OSS_CONTENT_TYPE] = Util::guessMimeType($path, '');
         }
 
@@ -107,7 +107,7 @@ class AliyunOssAdapter extends AbstractAdapter
         $result = compact('type', 'path');
         $result['mimetype'] = $options[OssClient::OSS_CONTENT_TYPE];
         return $result;
-	}
+    }
 
     /**
      * Write a new file.
@@ -122,21 +122,21 @@ class AliyunOssAdapter extends AbstractAdapter
         $object = $this->applyPathPrefix($path);
         $options = $this->getOptionsFromConfig($config);
 
-        if (! isset($options[OssClient::OSS_LENGTH])) {
+        if (!isset($options[OssClient::OSS_LENGTH])) {
             $options[OssClient::OSS_LENGTH] = Util::contentSize($contents);
         }
 
-        if (! isset($options[OssClient::OSS_CONTENT_TYPE])) {
+        if (!isset($options[OssClient::OSS_CONTENT_TYPE])) {
             $options[OssClient::OSS_CONTENT_TYPE] = Util::guessMimeType($path, $contents);
         }
 
         $this->client->putObject($this->bucket, $object, $contents, $options);
-    
-		$type = 'file';
+
+        $type = 'file';
         $result = compact('type', 'path', 'contents');
         $result['mimetype'] = $options[OssClient::OSS_CONTENT_TYPE];
         $result['size'] = $options[OssClient::OSS_LENGTH];
-        return $result;    
+        return $result;
     }
 
     /**
@@ -149,8 +149,8 @@ class AliyunOssAdapter extends AbstractAdapter
      */
     public function update($path, $contents, Config $config)
     {
-		if (! $config->has('visibility') && ! $config->has('ACL')) {
-        	$config->set('ACL', $this->getObjectACL($path));
+        if (!$config->has('visibility') && !$config->has('ACL')) {
+            $config->set('ACL', $this->getObjectACL($path));
         }
         return $this->write($path, $contents, $config);
     }
@@ -211,7 +211,7 @@ class AliyunOssAdapter extends AbstractAdapter
             if ($val['type'] === 'file') {
                 $objects[] = $this->applyPathPrefix($val['path']);
             } else {
-                $objects[] = $this->applyPathPrefix($val['path']) .'/';
+                $objects[] = $this->applyPathPrefix($val['path']) . '/';
             }
         }
 
@@ -245,10 +245,9 @@ class AliyunOssAdapter extends AbstractAdapter
     {
         $object = $this->applyPathPrefix($path);
 
-        if ($this->client->doesObjectExist($this->bucket, $object))
-		{
-			return true;
-		}
+        if ($this->client->doesObjectExist($this->bucket, $object)) {
+            return true;
+        }
 
         return $this->doesDirectoryExist($object);
     }
@@ -395,7 +394,7 @@ class AliyunOssAdapter extends AbstractAdapter
     {
         $options = $this->options;
         foreach (static::$mappingOptions as $option => $ossOption) {
-            if (! $config->has($option)) {
+            if (!$config->has($option)) {
                 continue;
             }
             $options[$ossOption] = $config->get($option);
@@ -410,23 +409,23 @@ class AliyunOssAdapter extends AbstractAdapter
     public function setVisibility($path, $visibility)
     {
         $object = $this->applyPathPrefix($path);
-        $acl = ($visibility === AdapterInterface::VISIBILITY_PUBLIC ) ? 'public-read' : 'private';
+        $acl = ($visibility === AdapterInterface::VISIBILITY_PUBLIC) ? 'public-read' : 'private';
         $this->client->putObjectAcl($this->bucket, $object, $acl);
         return compact('visibility');
     }
 
-   /**
+    /**
      * {@inheritdoc}
      */
     public function getVisibility($path)
     {
         $bucket = $this->bucket;
         $object = $this->applyPathPrefix($path);
-		$res['visibility'] = $this->client->getObjectAcl($bucket, $object);
-		return $res;
+        $res['visibility'] = $this->client->getObjectAcl($bucket, $object);
+        return $res;
     }
-    
-	/**
+
+    /**
      * The the ACL visibility.
      *
      * @param string $path
@@ -438,8 +437,8 @@ class AliyunOssAdapter extends AbstractAdapter
         $metadata = $this->getVisibility($path);
         return $metadata['visibility'] === AdapterInterface::VISIBILITY_PUBLIC ? 'public-read' : 'private';
     }
-	
-	protected function doesDirectoryExist($object)
+
+    protected function doesDirectoryExist($object)
     {
         // Maybe this isn't an actual key, but a prefix.
         // Do a prefix listing of objects to determine.
@@ -448,7 +447,7 @@ class AliyunOssAdapter extends AbstractAdapter
         $delimiter = '/';
         $nextMarker = '';
         $maxkeys = 1000;
-		$prefix = rtrim($object, '/') . '/';
+        $prefix = rtrim($object, '/') . '/';
         $options = [
             'delimiter' => $delimiter,
             'prefix'    => $prefix,
@@ -460,12 +459,16 @@ class AliyunOssAdapter extends AbstractAdapter
         $objectList = $listObjectInfo->getObjectList(); // 文件列表
         $prefixList = $listObjectInfo->getPrefixList(); // 目录列表
 
-		return $objectList || $prefixList;
+        return $objectList || $prefixList;
     }
-    
+
     protected function applyPathSeparator($path)
     {
         return rtrim($path, '\\/') . '/';
     }
 
+    public function url($path)
+    {
+        return $path;
+    }
 }
