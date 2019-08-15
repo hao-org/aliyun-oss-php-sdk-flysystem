@@ -469,6 +469,6 @@ class AliyunOssAdapter extends AbstractAdapter
 
     public function getUrl($path)
     {
-        return $path;
+        return $this->options['domain'] . '/' . $path;
     }
 }
