@@ -1,6 +1,6 @@
 {
-  "name": "runphp/aliyun-oss-flysystem",
-  "description": "This is a Flysystem adapter for the Aliyun OSS ~2.2.1",
+  "name": "hao-org/aliyun-oss-flysystem",
+  "description": "Flysystem adapter for the Aliyun OSS,+支持获取文件url ",
   "license": "MIT",
   "authors": [
     {
